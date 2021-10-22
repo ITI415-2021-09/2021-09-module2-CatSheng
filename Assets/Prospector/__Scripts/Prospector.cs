@@ -20,6 +20,9 @@ public class Prospector : MonoBehaviour {
 	static public int SCORE_FROM_PREV_ROUND = 0;
 	static public int HIGH_SCORE = 0;
 
+	public float reloadDelay = 1f; // The delay between rounds
+	public Text gameOverText, roundResultText, highScoreText;
+
 	public Vector3 fsPosMid = new Vector3(0.5f, 0.90f, 0);
 	public Vector3 fsPosRun = new Vector3(0.5f, 0.75f, 0);
 	public Vector3 fsPosMid2 = new Vector3(0.5f, 0.5f, 0);
@@ -59,6 +62,38 @@ public class Prospector : MonoBehaviour {
 		score += SCORE_FROM_PREV_ROUND;
 		// And reset the SCORE_FROM_PREV_ROUND
 		SCORE_FROM_PREV_ROUND = 0;
+		SetUpUITexts();
+	}
+
+	void SetUpUITexts()
+    {
+		GameObject go = GameObject.Find("HighScore");
+        if (go != null)
+        {
+			highScoreText = go.GetComponent<Text>();
+        }
+		string hScore = "High Score: " + Utils.AddCommasToNumber(HIGH_SCORE);
+		go.GetComponent<Text>().text = hScore;
+
+		go = GameObject.Find("GameOver");
+		if (go != null)
+		{
+			gameOverText = go.GetComponent<Text>();
+		}
+
+		go = GameObject.Find("RoundResult");
+		if (go != null)
+		{
+			roundResultText = go.GetComponent<Text>();
+		}
+
+		ShowResultsUI(false);
+	}
+
+	void ShowResultsUI(bool show)
+	{
+		gameOverText.gameObject.SetActive(show);
+		roundResultText.gameObject.SetActive(show);
 	}
 
 	void Start()
@@ -143,7 +178,7 @@ public class Prospector : MonoBehaviour {
 			cp.state = CardState.tableau;
 			// CardProspectors in the tableau have the state CardState.tableau
 
-			cp.SetSortingLayerName(tSD.layerName); // Set the sorting layers
+			//cp.SetSortingLayerName(tSD.layerName); // Set the sorting layers
 
 			tableau.Add(cp); // Add this CardProspector to the List<> tableau
 		}
@@ -330,6 +365,15 @@ public class Prospector : MonoBehaviour {
 		{
 			ScoreManager(ScoreEvent.gameLoss);
 		}
+		// Reload the scene in reloadDelay seconds
+		// This will give the score a moment to travel
+		Invoke("ReloadLevel", reloadDelay); //1
+
+		//Application.LoadLevel("__Prospector_Scene_0");
+	}
+
+	void ReloadLevel()
+	{
 		// Reload the scene, resetting the game
 		Application.LoadLevel("__Prospector_Scene_0");
 	}
@@ -397,19 +441,26 @@ public class Prospector : MonoBehaviour {
 				// static fields are NOT reset by Application.LoadLevel()
 				Prospector.SCORE_FROM_PREV_ROUND = score;
 				print("You won this round! Round score: " + score);
+				gameOverText.text = "Round Over";
+				roundResultText.text = "You won this round! \nRound Score: " + score;
+				ShowResultsUI(true);
 				break;
 			case ScoreEvent.gameLoss:
-				// If it's a loss, check against the high score
+				gameOverText.text = "Game Over";
 				if (Prospector.HIGH_SCORE <= score)
 				{
 					print("You got the high score! High score: " + score);
+					string str = "You got the high score! \nHigh score: " + score;
+					roundResultText.text = str;
 					Prospector.HIGH_SCORE = score;
 					PlayerPrefs.SetInt("ProspectorHighScore", score);
 				}
 				else
 				{
 					print("Your final score for the game was: " + score);
+					roundResultText.text = "Your final score was: " + score;
 				}
+				ShowResultsUI(true);
 				break;
 			default:
 				print("score: " + score + " scoreRun:" + scoreRun + " chain:" + chain);
