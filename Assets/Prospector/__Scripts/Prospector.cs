@@ -16,7 +16,7 @@ public enum ScoreEvent
 
 public class Prospector : MonoBehaviour {
 
-	static public Prospector 	S;
+	static public Prospector S;
 	static public int SCORE_FROM_PREV_ROUND = 0;
 	static public int HIGH_SCORE = 0;
 
@@ -29,19 +29,19 @@ public class Prospector : MonoBehaviour {
 	public Vector3 fsPosEnd = new Vector3(1.0f, 0.65f, 0);
 
 	[Header("Set in Inspector")]
-	public TextAsset			deckXML;
-	public TextAsset			layoutXML;
-	public float				xOffset = 3;
-	public float				yOffset = -2.5f;
-	public Vector3				layoutCenter;
+	public TextAsset deckXML;
+	public TextAsset layoutXML;
+	public float xOffset = 3;
+	public float yOffset = -2.5f;
+	public Vector3 layoutCenter;
 
 
 	[Header("Set Dynamically")]
-	public Deck					deck;
-	public Layout				layout;
+	public Deck deck;
+	public Layout layout;
 	public List<CardProspector> drawPile;
-	public Transform			layoutAnchor;
-	public CardProspector		target;
+	public Transform layoutAnchor;
+	public CardProspector target;
 	public List<CardProspector> tableau;
 	public List<CardProspector> discardPile;
 
@@ -51,7 +51,7 @@ public class Prospector : MonoBehaviour {
 	public int score = 0;
 	public FloatingScore fsRun;
 
-	void Awake(){
+	void Awake() {
 		S = this;
 		// Check for a high score in PlayerPrefs
 		if (PlayerPrefs.HasKey("ProspectorHighScore"))
@@ -66,12 +66,8 @@ public class Prospector : MonoBehaviour {
 	}
 
 	void SetUpUITexts()
-    {
+	{
 		GameObject go = GameObject.Find("HighScore");
-        if (go != null)
-        {
-			highScoreText = go.GetComponent<Text>();
-        }
 		string hScore = "High Score: " + Utils.AddCommasToNumber(HIGH_SCORE);
 		go.GetComponent<Text>().text = hScore;
 
@@ -108,21 +104,27 @@ public class Prospector : MonoBehaviour {
 
 		drawPile = ConvertListCardsToListCardProspectors(deck.cards);
 		LayoutGame();
+
+		//Get Bezier curve positions
+		//fsPosMid = fsPosMidObject.position;
+		//fsPosRun = fsPosRunObject.position;
+		//fsPosMid2 = fsPosMid2Object.position;
+		//fsPosEnd = fsPosEndObject.position;
 	}
 
-		List<CardProspector>
+	List<CardProspector>
 
-            ConvertListCardsToListCardProspectors(List < Card > lCD){
-			List<CardProspector>lCP = new List<CardProspector>();
-			CardProspector tCP;
-			foreach(Card tCD in lCD)
-            {
-				tCP = tCD as CardProspector;
-				lCP.Add(tCP);
+		ConvertListCardsToListCardProspectors(List<Card> lCD) {
+		List<CardProspector> lCP = new List<CardProspector>();
+		CardProspector tCP;
+		foreach (Card tCD in lCD)
+		{
+			tCP = tCD as CardProspector;
+			lCP.Add(tCP);
 
-            }
-			return (lCP);
-        }
+		}
+		return (lCP);
+	}
 	CardProspector Draw()
 	{
 		CardProspector cd = drawPile[0]; // Pull the 0th CardProspector
@@ -144,6 +146,7 @@ public class Prospector : MonoBehaviour {
 		}
 		// If it's not found, return null
 		return (null);
+
 	}
 
 	// LayoutGame() positions the initial tableau of cards, a.k.a. the "mine"
@@ -178,11 +181,18 @@ public class Prospector : MonoBehaviour {
 			cp.state = CardState.tableau;
 			// CardProspectors in the tableau have the state CardState.tableau
 
-			//cp.SetSortingLayerName(tSD.layerName); // Set the sorting layers
-
+			cp.SetSortingLayerName(tSD.layerName); // Set the sorting layers
 			tableau.Add(cp); // Add this CardProspector to the List<> tableau
 		}
 
+		foreach (CardProspector tCP in tableau)
+		{
+			foreach (int hid in tCP.slotDef.hiddenBy)
+			{
+				cp = FindCardByLayoutID(hid);
+				tCP.hiddenBy.Add(cp);
+			}
+		}
 
 
 		// Set up the initial target card
@@ -191,6 +201,7 @@ public class Prospector : MonoBehaviour {
 		// Set up the Draw pile
 		UpdateDrawPile();
 	}
+
 	// CardClicked is called any time a card in the game is clicked
 	public void CardClicked(CardProspector cd)
 	{
@@ -325,6 +336,7 @@ public class Prospector : MonoBehaviour {
 			cd.faceUp = fup; // Set the value on the card
 		}
 	}
+
 	// Test whether the game is over
 	void CheckForGameOver()
 	{
@@ -413,8 +425,8 @@ public class Prospector : MonoBehaviour {
 				FloatingScore fs;
 				// Move it from the mousePosition to fsPosRun
 				Vector3 p0 = Input.mousePosition;
-				p0.x /= Screen.width;
-				p0.y /= Screen.height;
+				//p0.x /= Screen.width;
+				//p0.y /= Screen.height;
 				fsPts = new List<Vector3>();
 				fsPts.Add(p0);
 				fsPts.Add(fsPosMid);
@@ -437,11 +449,11 @@ public class Prospector : MonoBehaviour {
 		switch (sEvt)
 		{
 			case ScoreEvent.gameWin:
+				gameOverText.text = "Round Over";
 				// If it's a win, add the score to the next round
 				// static fields are NOT reset by Application.LoadLevel()
 				Prospector.SCORE_FROM_PREV_ROUND = score;
-				print("You won this round! Round score: " + score);
-				gameOverText.text = "Round Over";
+				//print("You won this round! Round score: " + score);
 				roundResultText.text = "You won this round! \nRound Score: " + score;
 				ShowResultsUI(true);
 				break;
@@ -449,7 +461,7 @@ public class Prospector : MonoBehaviour {
 				gameOverText.text = "Game Over";
 				if (Prospector.HIGH_SCORE <= score)
 				{
-					print("You got the high score! High score: " + score);
+					//print("You got the high score! High score: " + score);
 					string str = "You got the high score! \nHigh score: " + score;
 					roundResultText.text = str;
 					Prospector.HIGH_SCORE = score;
@@ -457,13 +469,13 @@ public class Prospector : MonoBehaviour {
 				}
 				else
 				{
-					print("Your final score for the game was: " + score);
+					//print("Your final score for the game was: " + score);
 					roundResultText.text = "Your final score was: " + score;
 				}
 				ShowResultsUI(true);
 				break;
 			default:
-				print("score: " + score + " scoreRun:" + scoreRun + " chain:" + chain);
+				//print("score: " + score + " scoreRun:" + scoreRun + " chain:" + chain);
 				break;
 		}
 	}
