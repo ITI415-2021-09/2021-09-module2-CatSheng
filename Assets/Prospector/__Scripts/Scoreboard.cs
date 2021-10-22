@@ -62,7 +62,7 @@ public class Scoreboard : MonoBehaviour
     // calling function can do more with it (like set fontSizes, etc.)
     public FloatingScore CreateFloatingScore(int amt, List<Vector3> pts)
     {
-        GameObject go = Instantiate(prefabFloatingScore) as GameObject;
+        GameObject go = Instantiate<GameObject>(prefabFloatingScore);
         FloatingScore fs = go.GetComponent<FloatingScore>();
         fs.score = amt;
         fs.reportFinishTo = this.gameObject; // Set fs to call back to this

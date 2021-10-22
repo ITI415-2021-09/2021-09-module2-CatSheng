@@ -104,12 +104,6 @@ public class Prospector : MonoBehaviour {
 
 		drawPile = ConvertListCardsToListCardProspectors(deck.cards);
 		LayoutGame();
-
-		//Get Bezier curve positions
-		//fsPosMid = fsPosMidObject.position;
-		//fsPosRun = fsPosRunObject.position;
-		//fsPosMid2 = fsPosMid2Object.position;
-		//fsPosEnd = fsPosEndObject.position;
 	}
 
 	List<CardProspector>
@@ -237,6 +231,7 @@ public class Prospector : MonoBehaviour {
 				MoveToTarget(cd); // Make it the target card
 				SetTableauFaces(); // Update tableau card face-ups
 				ScoreManager(ScoreEvent.mine);
+
 				break;
 		}
 		// Check to see whether the game is over or not
@@ -319,21 +314,24 @@ public class Prospector : MonoBehaviour {
 		// Otherwise, return false
 		return (false);
 	}
+
+
+
 	// This turns cards in the Mine face-up or face-down
 	void SetTableauFaces()
 	{
 		foreach (CardProspector cd in tableau)
 		{
-			bool fup = true; // Assume the card will be face-up
+			bool faceUp = true; // Assume the card will be face-up
 			foreach (CardProspector cover in cd.hiddenBy)
 			{
 				// If either of the covering cards are in the tableau
 				if (cover.state == CardState.tableau)
 				{
-					fup = false; // then this card is face-down
+					faceUp = false; // then this card is face-down
 				}
 			}
-			cd.faceUp = fup; // Set the value on the card
+			cd.faceUp = faceUp; // Set the value on the card
 		}
 	}
 
