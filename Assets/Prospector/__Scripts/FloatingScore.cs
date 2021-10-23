@@ -17,7 +17,6 @@ public class FloatingScore : MonoBehaviour
 {
 	public FSState state = FSState.idle;
 
-	[SerializeField]
 	private int _score = 0; //The score field
 	public string scoreString;
 
@@ -45,10 +44,14 @@ public class FloatingScore : MonoBehaviour
 	//The GameObject that will receive the sendMessage when this is done moving
 	public GameObject reportFinishTo = null;
 
+	private RectTransform rectTrans;
+
 	//Set up the FloatingScore and movement
 	//Note the use of parameter defaults for eTimeS & eTimeD
 	public void Init(List<Vector3> ePts, float eTimeS = 0, float eTimeD = 1)
 	{
+		rectTrans = GetComponent<RectTransform>();
+		rectTrans.anchoredPosition = Vector3.zero;
 		bezierPts = new List<Vector3>(ePts);
 
 		if (ePts.Count == 1) //If there's only one point
@@ -124,7 +127,8 @@ public class FloatingScore : MonoBehaviour
 			}
 			//Use bezier curve to move this to the right point
 			Vector3 pos = Utils.Bezier(uC, bezierPts);
-			transform.position = pos;
+			rectTrans.anchorMin = rectTrans.anchorMax = pos;
+			//transform.position = pos;
 			if (fontSizes != null && fontSizes.Count > 0)
 			{
 				//If fontSizes has values in it...then adjust the fontSize of this Text on the GUI
