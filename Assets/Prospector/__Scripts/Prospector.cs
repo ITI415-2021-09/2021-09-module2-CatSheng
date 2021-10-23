@@ -20,7 +20,7 @@ public class Prospector : MonoBehaviour {
 	static public int SCORE_FROM_PREV_ROUND = 0;
 	static public int HIGH_SCORE = 0;
 
-	public float reloadDelay = 1f; // The delay between rounds
+	public float reloadDelay = 3f; // The delay between rounds
 	public Text gameOverText, roundResultText, highScoreText;
 
 	public Vector3 fsPosMid = new Vector3(0.5f, 0.90f, 0);
@@ -211,6 +211,7 @@ public class Prospector : MonoBehaviour {
 				MoveToTarget(Draw()); // Moves the next drawn card to the target
 				UpdateDrawPile(); // Restacks the drawPile
 				ScoreManager(ScoreEvent.draw);
+				FloatingScoreHandler(ScoreEvent.draw);
 				break;
 			case CardState.tableau:
 				// Clicking a card in the tableau will check if it's a valid play
@@ -230,8 +231,15 @@ public class Prospector : MonoBehaviour {
 				tableau.Remove(cd); // Remove it from the tableau List
 				MoveToTarget(cd); // Make it the target card
 				SetTableauFaces(); // Update tableau card face-ups
-				ScoreManager(ScoreEvent.mine);
-
+				if (cd.isGold)
+				{
+					ScoreManager(ScoreEvent.mineGold); 
+				}
+				else
+                {
+					ScoreManager(ScoreEvent.mine);
+				}
+				FloatingScoreHandler(ScoreEvent.mine);
 				break;
 		}
 		// Check to see whether the game is over or not
@@ -367,22 +375,36 @@ public class Prospector : MonoBehaviour {
 	// Called when the game is over. Simple for now, but expandable
 	void GameOver(bool won)
 	{
+		int score = ScoreManager.SCORE;
+		if (fsRun != null) score += fsRun.score;
+
 		if (won)
 		{
-			ScoreManager(ScoreEvent.gameWin); 
+			//print("Game Over. You won! :)");
+			gameOverText.text = "Round Over";
+			roundResultText.text = "You won this round!\nRound Score: " + score;
+			ShowResultsUI(true);
+			ScoreManager.EVENT(eScoreEvent.gameWin);
+			FloatingScoreHandler(eScoreEvent.gameWin);
 		}
 		else
 		{
-			ScoreManager(ScoreEvent.gameLoss);
+			//print("Game Over. You Lost. :(");
+			gameOverText.text = "Game Over";
+			if (ScoreManager.HIGH_SCORE <= score)
+			{
+				roundResultText.text = "You got the high score!\nHigh score: " + score;
+			}
+			else
+			{
+				roundResultText.text = "Your final score was: " + score;
+			}
+			ShowResultsUI(true);
+			ScoreManager.EVENT(eScoreEvent.gameLoss);
+			FloatingScoreHandler(eScoreEvent.gameLoss);
 		}
-		// Reload the scene in reloadDelay seconds
-		// This will give the score a moment to travel
-		Invoke("ReloadLevel", reloadDelay); //1
 
-		//Application.LoadLevel("__Prospector_Scene_0");
-	}
-
-	void ReloadLevel()
+		void ReloadLevel()
 	{
 		// Reload the scene, resetting the game
 		Application.LoadLevel("__Prospector_Scene_0");
@@ -423,8 +445,8 @@ public class Prospector : MonoBehaviour {
 				FloatingScore fs;
 				// Move it from the mousePosition to fsPosRun
 				Vector3 p0 = Input.mousePosition;
-				//p0.x /= Screen.width;
-				//p0.y /= Screen.height;
+				p0.x /= Screen.width;
+				p0.y /= Screen.height;
 				fsPts = new List<Vector3>();
 				fsPts.Add(p0);
 				fsPts.Add(fsPosMid);
