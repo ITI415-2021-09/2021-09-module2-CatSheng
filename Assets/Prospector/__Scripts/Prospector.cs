@@ -163,8 +163,6 @@ public class Prospector : MonoBehaviour {
 			cp = Draw(); // Pull a card from the top (beginning) of the drawPile
 			cp.faceUp = tSD.faceUp; // Set its faceUp to the value in SlotDef
 			cp.transform.parent = layoutAnchor; // Make its parent layoutAnchor
-												// This replaces the previous parent: deck.deckAnchor, which appears
-												// as _Deck in the Hierarchy when the scene is playing.
 			cp.transform.localPosition = new Vector3(
 			layout.multiplier.x * tSD.x,
 			layout.multiplier.y * tSD.y,
@@ -211,7 +209,6 @@ public class Prospector : MonoBehaviour {
 				MoveToTarget(Draw()); // Moves the next drawn card to the target
 				UpdateDrawPile(); // Restacks the drawPile
 				ScoreManager(ScoreEvent.draw);
-				FloatingScoreHandler(ScoreEvent.draw);
 				break;
 			case CardState.tableau:
 				// Clicking a card in the tableau will check if it's a valid play
@@ -231,16 +228,16 @@ public class Prospector : MonoBehaviour {
 				tableau.Remove(cd); // Remove it from the tableau List
 				MoveToTarget(cd); // Make it the target card
 				SetTableauFaces(); // Update tableau card face-ups
-				if (cd.isGold)
-				{
-					ScoreManager(ScoreEvent.mineGold); 
-				}
-				else
+                if (cd.isGold)
                 {
-					ScoreManager(ScoreEvent.mine);
-				}
-				FloatingScoreHandler(ScoreEvent.mine);
-				break;
+                    ScoreManager(ScoreEvent.mineGold);
+                }
+                else
+                {
+                    ScoreManager(ScoreEvent.mine);
+                }
+
+                break;
 		}
 		// Check to see whether the game is over or not
 		CheckForGameOver();
@@ -375,39 +372,25 @@ public class Prospector : MonoBehaviour {
 	// Called when the game is over. Simple for now, but expandable
 	void GameOver(bool won)
 	{
-		int score = ScoreManager.SCORE;
-		if (fsRun != null) score += fsRun.score;
-
 		if (won)
 		{
-			//print("Game Over. You won! :)");
-			gameOverText.text = "Round Over";
-			roundResultText.text = "You won this round!\nRound Score: " + score;
-			ShowResultsUI(true);
-			ScoreManager.EVENT(eScoreEvent.gameWin);
-			FloatingScoreHandler(eScoreEvent.gameWin);
+			ScoreManager(ScoreEvent.gameWin); 
 		}
 		else
 		{
-			//print("Game Over. You Lost. :(");
-			gameOverText.text = "Game Over";
-			if (ScoreManager.HIGH_SCORE <= score)
-			{
-				roundResultText.text = "You got the high score!\nHigh score: " + score;
-			}
-			else
-			{
-				roundResultText.text = "Your final score was: " + score;
-			}
-			ShowResultsUI(true);
-			ScoreManager.EVENT(eScoreEvent.gameLoss);
-			FloatingScoreHandler(eScoreEvent.gameLoss);
+			ScoreManager(ScoreEvent.gameLoss);
 		}
+		// Reload the scene in reloadDelay seconds
+		// This will give the score a moment to travel
+		Invoke("ReloadLevel", reloadDelay); //1
 
-		void ReloadLevel()
+		//Application.LoadLevel("__Prospector_Scene_0");
+	}
+
+	void ReloadLevel()
 	{
 		// Reload the scene, resetting the game
-		Application.LoadLevel("__Prospector_Scene_0");
+		SceneManager.LoadScene("__Prospector_Scene_0");
 	}
 
 	// ScoreManager handles all of the scoring

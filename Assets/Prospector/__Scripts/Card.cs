@@ -17,6 +17,7 @@ public class Card : MonoBehaviour {
 
 	// List of the SpriteRenderer Components of this GameObject and its children
 	public SpriteRenderer[] spriteRenderers;
+	public bool isGold;
 
 	void Start()
 	{

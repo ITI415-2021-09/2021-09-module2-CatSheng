@@ -136,10 +136,9 @@ public class Deck : MonoBehaviour {
 		} // foreach
 		return (null);
 	}//GetCardDefinitionByRank
-	
-	
+
 	public void MakeCards() {
-		// stub Add the code from page 577 here
+		
 		cardNames = new List<string>();
 		string[] letters = new string[] {"C","D","H","S"};
 		foreach (string s in letters) {
@@ -150,11 +149,11 @@ public class Deck : MonoBehaviour {
 		
 		// list of all Cards
 		cards = new List<Card>();
-		
+
 		// temp variables
 		Sprite tS = null;
 		GameObject tGO = null;
-		SpriteRenderer tSR = null;  // so tempted to make a D&D ref here...
+		SpriteRenderer tSR = null;  
 		
 		for (int i=0; i<cardNames.Count; i++) {
 			GameObject cgo = Instantiate(prefabCard) as GameObject;
@@ -234,13 +233,15 @@ public class Deck : MonoBehaviour {
 				tSR.sprite = tS;
 				tSR.sortingOrder = 1;
 				tGO.transform.parent=card.transform;
-				tGO.transform.localPosition = Vector3.zero;  // slap it smack dab in the middle
+				tGO.transform.localPosition = Vector3.zero;  
 				tGO.name = "face";
 			}
 
 			tGO = Instantiate(prefabSprite) as GameObject;
 			tSR = tGO.GetComponent<SpriteRenderer>();
+			//tSR.sprite = isGold ? cardBackGold : cardBack; 
 			tSR.sprite = cardBack;
+			// tSR.sprite = cardBackGold; //this makes the cards all gold
 			tGO.transform.SetParent(card.transform);
 			tGO.transform.localPosition=Vector3.zero;
 			tSR.sortingOrder = 2;
