@@ -2,9 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-//The SlotDef class is not a subclass of Monobehavior, so it doesn't need a separate C# file
+//The SlotDefOG class is not a subclass of Monobehavior, so it doesn't need a separate C# file
 [System.Serializable]
-public class SlotDef
+public class SlotDefOG
 {
 	public float x;
 	public float y;
@@ -17,24 +17,24 @@ public class SlotDef
 	public Vector2 stagger;
 }
 
-public class Layout : MonoBehaviour
+public class LayoutOG : MonoBehaviour
 {
-	public PT_XMLReader xmlr; //Just like Deck, this has a PT_XMLReader
-	public PT_XMLHashtable xml; //This variable is for easier xml access
+	public PT_XMLReaderOG xmlr; //Just like DeckOG, this has a PT_XMLReaderOG
+	public PT_XMLHashtableOG xml; //This variable is for easier xml access
 	public Vector2 multiplier; //Sets the spacing of the tableau
 
-	//SlotDef references
-	public List<SlotDef> slotDefs; //All the SlotDefs for Row0 - Row6
-	public SlotDef drawPile;
-	public SlotDef discardPile;
+	//SlotDefOG references
+	public List<SlotDefOG> slotDefs; //All the SlotDefs for Row0 - Row6
+	public SlotDefOG drawPile;
+	public SlotDefOG discardPile;
 
 	//This holds all of the possible names for the layers set by layerID
-	public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Discard", "Draw" };
+	public string[] sortingLayerNames = new string[] { "Row0", "Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Discard", "Draw" };
 
 	//This function is called to read in the LayoutXML.xml file
 	public void ReadLayout(string xmlText)
 	{
-		xmlr = new PT_XMLReader();
+		xmlr = new PT_XMLReaderOG();
 		xmlr.Parse(xmlText); //The XML is parsed
 		xml = xmlr.xml["xml"][0]; //And xml is set as a shortcut to the XML
 
@@ -43,14 +43,14 @@ public class Layout : MonoBehaviour
 		multiplier.y = float.Parse(xml["multiplier"][0].att("y"));
 
 		//Read in the slots
-		SlotDef tSD;
+		SlotDefOG tSD;
 
 		//slotsX is used as a shortcut to all the <slot>s
-		PT_XMLHashList slotsX = xml["slot"];
+		PT_XMLHashListOG slotsX = xml["slot"];
 
 		for (int i = 0; i < slotsX.Count; i++)
 		{
-			tSD = new SlotDef(); //Create a new SlotDef instance
+			tSD = new SlotDefOG(); //Create a new SlotDefOG instance
 			if (slotsX[i].HasAtt("type"))
 			{
 				//If this <slot> has a type attribute, parse it
