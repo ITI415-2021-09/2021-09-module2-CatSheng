@@ -184,15 +184,12 @@ public class PyramidOG : MonoBehaviour {
 				tCP.hiddenBy.Add(cp);
 			}
 		}
-
-
-		// Set up the initial target card
+			// Set up the initial target card
 		MoveToTarget(Draw());
 
 		// Set up the Draw pile
 		UpdateDrawPile();
 	}
-
 
 	// CardClicked is called any time a card in the game is clicked
 	public void CardClicked(CardPyramidOG cd)
@@ -224,6 +221,10 @@ public class PyramidOG : MonoBehaviour {
 					// If it's not an adjacent rank, it's not valid
 					validMatch = false;
 				}
+				if (cd.rank == 13)
+                {
+					validMatch = true;
+                }
 				if (!validMatch) return; // return if not valid
 										 // Yay! It's a valid card.
 				tableau.Remove(cd); // Remove it from the tableau List
@@ -234,6 +235,27 @@ public class PyramidOG : MonoBehaviour {
 		// Check to see whether the game is over or not
 		CheckForGameOver();
 	}
+
+	public bool AddUptoThirteen(CardPyramidOG c0, CardPyramidOG c1)
+	{
+		if ((c0.rank + c1.rank) == 13)
+		{
+			return (true);
+		}
+		return (false);
+	}
+
+	//public void clicktwocards(c0, c1)
+	//{
+	//	cardone = c0.rank;
+	//	cardtwo = c1.rank;
+
+	//	if (cardone + cardtwo == 13)
+	//	{ return (true);
+	//	}
+	//	return (false);
+ //   }
+
 	// Moves the current target to the discardPile
 	void MoveToDiscard(CardPyramidOG cd)
 	{
@@ -311,15 +333,6 @@ public class PyramidOG : MonoBehaviour {
 	//	 otherwise, return false
 	//	return (false);
 	//}
-
-	public bool AddUptoThirteen (CardPyramidOG c0, CardPyramidOG c1)
-    {
-		if ((c0.rank + c1.rank) == 13)
-        {
-			return (true);
-        }
-		return (false);
-    }
 
 	// This turns cards in the Mine face-up or face-down
 	void SetTableauFaces()
