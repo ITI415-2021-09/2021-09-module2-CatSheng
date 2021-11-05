@@ -218,7 +218,7 @@ public class PyramidOG : MonoBehaviour {
 					// If the card is face-down, it's not valid
 					validMatch = false;
 				}
-				if (!AdjacentRank(cd, target))
+				if (!AddUptoThirteen(cd, target))
 				{
 					// If it's not an adjacent rank, it's not valid
 					validMatch = false;
@@ -302,23 +302,32 @@ public class PyramidOG : MonoBehaviour {
 		}
 	}
 	// Return true if the two cards are adjacent in rank (A & K wrap around)
-	public bool AdjacentRank(CardPyramidOG c0, CardPyramidOG c1)
-	{
-		// If either card is face-down, it's not adjacent.
-		if (!c0.faceUp || !c1.faceUp) return (false);
+	//public bool adjacentrank(cardpyramidog c0, cardpyramidog c1)
+	//{
+	//	 if either card is face-down, it's not adjacent.
+	//	if (!c0.faceup || !c1.faceup) return (false);
 
-		// If they are 1 apart, they are adjacent
-		if (Mathf.Abs(c0.rank - c1.rank) == 1)
-		{
+	//	 if they are 1 apart, they are adjacent
+	//	if (mathf.abs(c0.rank - c1.rank) == 1)
+	//	{
+	//		return (true);
+	//	}
+	//	 if one is a and the other king, they're adjacent
+	//	if (c0.rank == 1 && c1.rank == 13) return (true);
+	//	if (c0.rank == 13 && c1.rank == 1) return (true);
+
+	//	 otherwise, return false
+	//	return (false);
+	//}
+
+	public bool AddUptoThirteen (CardPyramidOG c0, CardPyramidOG c1)
+    {
+		if ((c0.rank + c1.rank) == 13)
+        {
 			return (true);
-		}
-		// If one is A and the other King, they're adjacent
-		if (c0.rank == 1 && c1.rank == 13) return (true);
-		if (c0.rank == 13 && c1.rank == 1) return (true);
-
-		// Otherwise, return false
+        }
 		return (false);
-	}
+    }
 
 
 
@@ -358,7 +367,7 @@ public class PyramidOG : MonoBehaviour {
 		// Check for remaining valid plays
 		foreach (CardPyramidOG cd in tableau)
 		{
-			if (AdjacentRank(cd, target))
+			if (AddUptoThirteen(cd, target))
 			{
 				// If there is a valid play, the game's not over
 				return;
@@ -390,7 +399,7 @@ public class PyramidOG : MonoBehaviour {
 	void ReloadLevel()
 	{
 		// Reload the scene, resetting the game
-		SceneManager.LoadScene("__Prospector_Scene_0");
+		SceneManager.LoadScene("GameScene");
 	}
 
 	// ScoreManager handles all of the scoring
