@@ -9,7 +9,6 @@ public enum ScoreEventOG
 {
 	draw,
 	mine,
-	mineGold,
 	gameWin,
 	gameLoss
 }
@@ -194,6 +193,7 @@ public class PyramidOG : MonoBehaviour {
 		UpdateDrawPile();
 	}
 
+
 	// CardClicked is called any time a card in the game is clicked
 	public void CardClicked(CardPyramidOG cd)
 	{
@@ -201,7 +201,7 @@ public class PyramidOG : MonoBehaviour {
 		switch (cd.state)
 		{
 			case CardStateOG.target:
-				// Clicking the target card does nothing
+				// Clicking the target card highlights it
 				break;
 			case CardStateOG.drawpile:
 				// Clicking any card in the drawPile will draw the next card
@@ -213,6 +213,7 @@ public class PyramidOG : MonoBehaviour {
 			case CardStateOG.tableau:
 				// Clicking a card in the tableau will check if it's a valid play
 				bool validMatch = true;
+				// Highlights the card on the tableau
 				if (!cd.faceUp)
 				{
 					// If the card is face-down, it's not valid
@@ -228,15 +229,6 @@ public class PyramidOG : MonoBehaviour {
 				tableau.Remove(cd); // Remove it from the tableau List
 				MoveToTarget(cd); // Make it the target card
 				SetTableauFaces(); // Update tableau card face-ups
-                if (cd.isGold)
-                {
-                    ScoreManager(ScoreEventOG.mineGold);
-                }
-                else
-                {
-                    ScoreManager(ScoreEventOG.mine);
-                }
-
                 break;
 		}
 		// Check to see whether the game is over or not
@@ -328,8 +320,6 @@ public class PyramidOG : MonoBehaviour {
         }
 		return (false);
     }
-
-
 
 	// This turns cards in the Mine face-up or face-down
 	void SetTableauFaces()
