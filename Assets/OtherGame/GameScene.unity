@@ -456,8 +456,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -538,7 +538,7 @@ MonoBehaviour:
   cardFront: {fileID: 21300000, guid: 418efb294cde2fa4994d13fcb03400b8, type: 3}
   cardFrontGold: {fileID: 21300000, guid: 80bb9cb9817235448b3f2b09f62bf977, type: 3}
   prefabSprite: {fileID: 100000, guid: bad6d2339429bb94f8d65d02062ad576, type: 3}
-  prefabCard: {fileID: 100000, guid: 6c10e9e34bec2634ab6f58846dda2dce, type: 3}
+  prefabCard: {fileID: 100000, guid: 98e887af947e08f4a9465b9470f17638, type: 3}
   xmlr:
     xmlText: 
   cardNames: []
