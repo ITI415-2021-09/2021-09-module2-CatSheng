@@ -244,23 +244,23 @@ public class PyramidOG : MonoBehaviour {
 		return (false);
 	}
 
-	public void CardClickedTableau(CardPyramidOG c0)
-    {
-		card1 = c0.tableau; 
-		switch (card1)
-        {
-			case CardStateOG.tableau:
-				if (AddUptoThirteen(c0, card1))
+	//public void CardClickedTableau(CardPyramidOG c0)
+ //   {
+	//	card1 = c0.tableau; 
+	//	switch (card1)
+ //       {
+	//		case CardStateOG.tableau:
+	//			if (AddUptoThirteen(c0, card1))
 					
-			tableau.Remove(c0); // Remove it from the tableau List
-			tableau.Remove(c1);
-			MoveToTarget(c0); // Make it the target card
-			MoveToTarget(c1);
-			SetTableauFaces(); // Update tableau card face-ups
-				break;
-		}
+	//		tableau.Remove(c0); // Remove it from the tableau List
+	//		tableau.Remove(c1);
+	//		MoveToTarget(c0); // Make it the target card
+	//		MoveToTarget(c1);
+	//		SetTableauFaces(); // Update tableau card face-ups
+	//			break;
+	//	}
 
-	}
+	//}
 
 	// Moves the current target to the discardPile
 	void MoveToDiscard(CardPyramidOG cd)
