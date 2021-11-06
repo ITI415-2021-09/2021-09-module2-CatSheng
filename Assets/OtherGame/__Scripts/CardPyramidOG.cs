@@ -31,6 +31,7 @@ public class CardPyramidOG : Card
 	{
 		// Call the CardClicked method on the PyramidOG singleton
 		PyramidOG.S.CardClicked(this);
+		PyramidOG.S.CardClickedTableau(this);
 		// Also call the base class (Card.cs) version of this method
 		base.OnMouseUpAsButton();
 	}

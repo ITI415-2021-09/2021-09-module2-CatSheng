@@ -139,7 +139,6 @@ public class PyramidOG : MonoBehaviour {
 		}
 		// If it's not found, return null
 		return (null);
-
 	}
 
 	// LayoutGame() positions the initial tableau of cards, a.k.a. the "mine"
@@ -198,7 +197,7 @@ public class PyramidOG : MonoBehaviour {
 		switch (cd.state)
 		{
 			case CardStateOG.target:
-				// Clicking the target card highlights it
+				// Clicking the target card does nothing
 				break;
 			case CardStateOG.drawpile:
 				// Clicking any card in the drawPile will draw the next card
@@ -245,16 +244,23 @@ public class PyramidOG : MonoBehaviour {
 		return (false);
 	}
 
-	//public void clicktwocards(c0, c1)
-	//{
-	//	cardone = c0.rank;
-	//	cardtwo = c1.rank;
+	public void CardClickedTableau(CardPyramidOG c0)
+    {
+		card1 = c0.tableau; 
+		switch (card1)
+        {
+			case CardStateOG.tableau:
+				if (AddUptoThirteen(c0, card1))
+					
+			tableau.Remove(c0); // Remove it from the tableau List
+			tableau.Remove(c1);
+			MoveToTarget(c0); // Make it the target card
+			MoveToTarget(c1);
+			SetTableauFaces(); // Update tableau card face-ups
+				break;
+		}
 
-	//	if (cardone + cardtwo == 13)
-	//	{ return (true);
-	//	}
-	//	return (false);
- //   }
+	}
 
 	// Moves the current target to the discardPile
 	void MoveToDiscard(CardPyramidOG cd)
@@ -367,6 +373,11 @@ public class PyramidOG : MonoBehaviour {
 		{
 			return;
 		}
+		if (drawPile.Count == 0)
+        {
+			GameOver(true);
+			return;
+        }
 		// Check for remaining valid plays
 		foreach (CardPyramidOG cd in tableau)
 		{
